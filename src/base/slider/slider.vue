@@ -38,10 +38,7 @@
     data() {
       return {
         dots: [],
-        currentPage: 0,
-        slider: {
-          type: Object
-        }
+        currentPage: 0
       }
     },
     methods: {

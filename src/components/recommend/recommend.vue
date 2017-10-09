@@ -12,7 +12,15 @@
       </div>
       <div class="recommend-list">
         <h1 class="list-title"> 热门歌单推荐</h1>
-        <ul></ul>
+        <ul>
+          <li class="item" v-for='item in discList'>
+            <div class="icon"><img :src="item.imgurl" width='60' height="60"></div>
+            <div class="text">
+              <h3 class="name" v-html='item.creator.name'></h3>
+              <p class="desc" v-html='item.dissname'></p>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -37,7 +45,8 @@
         recommends: {
           type: Array,
           default: []
-        }
+        },
+        discList: []
       }
     },
     methods: {
@@ -53,6 +62,7 @@
         getDicsList().then((res) => {
           if (res.code === ERR_OK) {
             console.log(res.data)
+            this.discList = res.data.list
           }
         })
       }
