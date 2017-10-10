@@ -1,28 +1,30 @@
 <template>
   <div class="recommend" ref="recommend">
-    <div class="recommend-content">
-      <div class="slider-wrapper" v-if="recommends.length">
-        <slider>
-          <div v-for='recom in recommends'>
-            <a :href="recom.linkUrl">
-              <img :src="recom.picUrl" alt="">
-            </a>
-          </div>
-        </slider>
-      </div>
-      <div class="recommend-list">
-        <h1 class="list-title"> 热门歌单推荐</h1>
-        <ul>
-          <li class="item" v-for='item in discList'>
-            <div class="icon"><img :src="item.imgurl" width='60' height="60"></div>
-            <div class="text">
-              <h3 class="name" v-html='item.creator.name'></h3>
-              <p class="desc" v-html='item.dissname'></p>
+    <scroll ref='scroll' :data1="discList" class="recommend-content">
+      <div>
+        <div class="slider-wrapper" v-if="recommends.length">
+          <slider>
+            <div v-for='recom in recommends'>
+              <a :href="recom.linkUrl">
+                <img :src="recom.picUrl" @load='imgDone'>
+              </a>
             </div>
-          </li>
-        </ul>
+          </slider>
+        </div>
+        <div class="recommend-list">
+          <h1 class="list-title"> 热门歌单推荐</h1>
+          <ul>
+            <li class="item" v-for='item in discList'>
+              <div class="icon"><img :src="item.imgurl" width='60' height="60"></div>
+              <div class="text">
+                <h3 class="name" v-html='item.creator.name'></h3>
+                <p class="desc" v-html='item.dissname'></p>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
+    </scroll>
   </div>
 </template>
 
@@ -36,6 +38,7 @@
   import {getRecommend, getDicsList} from '@/api/recommend.js'
   import {ERR_OK} from '@/api/config.js'
   import Slider from '@/base/slider/slider.vue'
+  import Scroll from '@/base/scroll/scroll'
 
   export default{
     props: {
@@ -46,7 +49,8 @@
           type: Array,
           default: []
         },
-        discList: []
+        discList: [],
+        imgChecked: false
       }
     },
     methods: {
@@ -65,15 +69,27 @@
             this.discList = res.data.list
           }
         })
+      },
+      imgDone() {
+        // 只需要执行一次
+        if (!this.imgChecked) {
+          this.$refs.scroll.refresh()
+          console.log('img done first')
+          this.imgChecked = true
+        }
       }
     },
     components: {
-      Slider
+      Slider,
+      Scroll
     },
     computed: {
     },
     created() {
-      this._getRecommend()
+      setTimeout(() => {
+        this._getRecommend()
+        // 只要时间少于，可滑动的距离就会多很多，这是个错误
+      }, 100)
       this._getDicsList()
     }
   }
