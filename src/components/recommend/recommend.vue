@@ -15,7 +15,7 @@
           <h1 class="list-title"> 热门歌单推荐</h1>
           <ul>
             <li class="item" v-for='item in discList'>
-              <div class="icon"><img :src="item.imgurl" width='60' height="60"></div>
+              <div class="icon"><img v-lazy="item.imgurl" width='60' height="60"></div>
               <div class="text">
                 <h3 class="name" v-html='item.creator.name'></h3>
                 <p class="desc" v-html='item.dissname'></p>
@@ -23,6 +23,9 @@
             </li>
           </ul>
         </div>
+      </div>
+      <div class="loading-container" v-if='!discList.length'>
+        <loading></loading>
       </div>
     </scroll>
   </div>
@@ -39,6 +42,7 @@
   import {ERR_OK} from '@/api/config.js'
   import Slider from '@/base/slider/slider.vue'
   import Scroll from '@/base/scroll/scroll'
+  import Loading from '@/base/loading/loading'
 
   export default{
     props: {
@@ -65,7 +69,7 @@
       _getDicsList() {
         getDicsList().then((res) => {
           if (res.code === ERR_OK) {
-            console.log(res.data)
+            // console.log(res.data)
             this.discList = res.data.list
           }
         })
@@ -81,16 +85,17 @@
     },
     components: {
       Slider,
-      Scroll
+      Scroll,
+      Loading
     },
     computed: {
     },
     created() {
+      this._getRecommend()
       setTimeout(() => {
-        this._getRecommend()
-        // 只要时间少于，可滑动的距离就会多很多，这是个错误
-      }, 100)
-      this._getDicsList()
+        // 模拟慢网速
+        this._getDicsList()
+      }, 1000)
     }
   }
 </script>
