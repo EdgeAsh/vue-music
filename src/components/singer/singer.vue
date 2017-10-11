@@ -1,6 +1,6 @@
 <template>
-  <div>
-    singer
+  <div class="singer">
+    <list-view :groups='singerList'></list-view>
   </div>
 </template>
 
@@ -14,6 +14,7 @@
   import {getSingerList} from '@/api/singer.js'
   import {ERR_OK} from '@/api/config'
   import {Singer} from '@/class/Singer.js'
+  import ListView from '@/base/listview/listview.vue'
 
   const HOT_NAME = '热门'
   const HOT_SINGER_LEN = 10
@@ -23,10 +24,7 @@
     },
     data() {
       return {
-        singerList: {
-          type: Array,
-          default: null
-        }
+        singerList: []
       }
     },
     methods: {
@@ -34,8 +32,7 @@
         getSingerList().then((res) => {
           if (res.code === ERR_OK) {
             // console.log(res.data.list)
-            let tep = this._refactorSinger(res.data.list)
-            console.log(tep)
+            this.singerList = this._refactorSinger(res.data.list)
           }
         })
       },
@@ -52,7 +49,7 @@
         // 遍历数组，分类存放
         list.forEach((item, index) => {
           if (index < HOT_SINGER_LEN) {
-            map.hot.itemList.push(new Singer({
+            map['hot']['itemList'].push(new Singer({
               id: item.Fsinger_id,
               name: item.Fsinger_name,
               avId: item.Fsinger_mid
@@ -86,12 +83,14 @@
         aZ.sort((a, b) => {
           return a.title.charCodeAt(0) - b.title.charCodeAt(0)
         })
-        // console.log([hot, ...aZ])
+        // console.log([...hot, ...aZ])
         // 合并数组，hot 排第一位
-        return [hot, ...aZ]
+        // console.log(hot.concat(aZ))
+        return [...hot, ...aZ]
       }
     },
     components: {
+      ListView
     },
     computed: {
     },
@@ -111,4 +110,9 @@
 </script>
 
 <style lang='stylus'>
+  .singer
+    position: fixed
+    top: 88px
+    bottom: 0
+    width: 100%
 </style>

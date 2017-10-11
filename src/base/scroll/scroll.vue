@@ -23,9 +23,10 @@
         type: Boolean,
         default: true
       },
-      data1: {
-        type: Array,
-        default: null
+      data1: Array,
+      listenScroll: {
+        type: Boolean,
+        default: false
       }
     },
     data() {
@@ -38,6 +39,11 @@
           probeType: this.probeType,
           click: this.click
         })
+
+        // 由父组件决定是否要监听 scroll 事件(better-scroll 派发)
+        if (this.listenScroll) {
+          this._onscroll()
+        }
       },
       // 代理方法
       enable() {
@@ -52,6 +58,21 @@
           this.scroll.refresh()
           // console.log('scroll refreshed')
         }
+      },
+      scrollTo(...rest) {
+        this.scroll && this.scroll.scrollTo.apply(this.scroll, rest)
+      },
+      scrollToElement(...rest) {
+        // console.log(rest instanceof Array, arguments instanceof Array)
+        this.scroll && this.scroll.scrollToElement.apply(this.scroll, rest)
+      },
+      _onscroll() {
+        // 监听 scroll事件
+        let me = this
+        this.scroll.on('scroll', (pos) => {
+          // 将位置信息传递到父组件
+          me.$emit('scroll', pos)
+        })
       }
     },
     components: {
