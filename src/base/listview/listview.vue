@@ -3,7 +3,7 @@
     :data1='groups'
     :listenScroll='listenScroll'
     @scroll='scrollIng'
-    :probeType='3'
+    :probeType='probeType'
   >
     <ul>
       <li v-for='group in groups' class="list-group" ref='listGroup'>
@@ -48,12 +48,6 @@
     },
     data() {
       return {
-        touch: {
-          anchorIndex: Number,
-          y1: Number,
-          y2: Number
-        },
-        listenScroll: true,
         listHeight: [],
         currentIndex: 0,
         scrollY: 0
@@ -137,16 +131,15 @@
         })
       }
     },
-    beforeCreate() {},
-    create() {
-    },
-    beforeMount() {},
-    mounted() {
-    },
-    beforeUpdate() {},
-    updated() {},
-    beforeDestroy() {},
-    destroyed() {
+    created() {
+      this.touch = {
+        anchorIndex: Number,
+        y1: Number,
+        y2: Number
+      }
+      this.probeType = 3
+      this.listenScroll = true
+      this.listHeight = []
     }
   }
 </script>
