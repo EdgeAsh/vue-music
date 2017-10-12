@@ -9,7 +9,8 @@
       <li v-for='group in groups' class="list-group" ref='listGroup'>
         <h2 class="list-group-title">{{group.title}}</h2>
         <ul>
-          <li class="list-group-item" v-for="item in group.itemList">
+          <li @click='selectItem(item)'
+          class="list-group-item" v-for="item in group.itemList">
             <img v-lazy="item.avatar" class="avatar">
             <span class="name">{{item.name}}</span>
           </li>
@@ -65,6 +66,10 @@
       }
     },
     methods: {
+      selectItem(item) {
+        // 将选中的元素抛给父组件
+        this.$emit('select', item)
+      },
       onShotcutTouchStart(e) {
         // 获取被点击条目的索引, scroll滚动
         let anchorIndex = getData(e.target, 'index')

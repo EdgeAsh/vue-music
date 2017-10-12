@@ -1,6 +1,7 @@
 <template>
   <div class="singer">
-    <list-view :groups='singerList'></list-view>
+    <list-view :groups='singerList' @select='getSinger'></list-view>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -15,6 +16,8 @@
   import {ERR_OK} from '@/api/config'
   import {Singer} from '@/class/Singer.js'
   import ListView from '@/base/listview/listview.vue'
+  // 语法糖
+  import {mapMutations} from 'vuex'
 
   const HOT_NAME = '热门'
   const HOT_SINGER_LEN = 10
@@ -28,6 +31,11 @@
       }
     },
     methods: {
+      getSinger(singer) {
+        // console.log(singer)
+        this.$router.push({path: `/singer/${singer.id}`})
+        this.setSinger(singer)
+      },
       _initSinger() {
         getSingerList().then((res) => {
           if (res.code === ERR_OK) {
@@ -91,7 +99,10 @@
         // 合并数组，hot 排第一位
         // console.log(hot.concat(aZ))
         return [...hot, ...aZ]
-      }
+      },
+      ...mapMutations({
+        setSinger: 'SET_SINGER'
+      })
     },
     components: {
       ListView
