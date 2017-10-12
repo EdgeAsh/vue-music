@@ -32,7 +32,11 @@
         getSingerList().then((res) => {
           if (res.code === ERR_OK) {
             // console.log(res.data.list)
-            this.singerList = this._refactorSinger(res.data.list)
+            let hh = this._refactorSinger(res.data.list)
+            // 为了显示加载歌手列表动画
+            setTimeout(() => {
+              this.singerList = hh
+            }, 1000)
           }
         })
       },
