@@ -23,3 +23,35 @@ export function getData(el, name, val) {
     return el.getAttribute(name)
   }
 }
+
+// 浏览器能力检测（用于添加 css某些属性的prefix）
+let elementStyle = document.createElement('div').style
+let vendor = (() => {
+  let transformName = {
+    webkit: 'webkitTransform',
+    Moz: 'MozTransform',
+    O: 'OTransform',
+    ms: 'msTransform',
+    standard: 'transform'
+  }
+
+  for (let key in transformName) {
+    if (elementStyle[transformName[key]] !== undefined) {
+      return key
+    }
+  }
+
+  return false
+})()
+// 根据浏览器，自动添加前缀
+export function prefixStyle(style) {
+  if (vendor === false) {
+    return false
+  }
+
+  if (vendor === 'standard') {
+    return style
+  }
+
+  return vendor + style.charAt(0).toUpperCase() + style.substr(1)
+}
