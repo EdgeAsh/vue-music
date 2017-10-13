@@ -1,6 +1,6 @@
 <template>
   <transition name='slide'>
-    <div class="singer-detail"></div>
+    <music-list :bg-image='bgImage' :songs='songLists' :title='title'></music-list>
   </transition>
 </template>
 
@@ -16,12 +16,14 @@
   import {getSingerDetail} from '@/api/singer.js'
   import {ERR_OK} from '@/api/config.js'
   import {createSong} from '@/class/Song.js'
+  import MusicList from '@/components/music-list/music-list.vue'
 
   export default{
     props: {
     },
     data() {
       return {
+        songLists: []
       }
     },
     methods: {
@@ -33,9 +35,9 @@
         }
         getSingerDetail(this.singer.id).then((res) => {
           if (res.code === ERR_OK) {
-            console.log(res.data.list[0])
-            let songs = this._refactorSongs(res.data.list)
-            console.log(songs[0])
+            // 获取歌手的歌曲列表
+            this.songLists = this._refactorSongs(res.data.list)
+            // console.log(this.songLists[0])
           }
         })
       },
@@ -53,11 +55,18 @@
       }
     },
     components: {
+      MusicList
     },
     computed: {
       ...mapGetters([
         'singer'
-      ])
+      ]),
+      bgImage() {
+        return this.singer.avatar
+      },
+      title() {
+        return this.singer.name
+      }
     },
     beforeCreate() {},
     created() {
@@ -78,14 +87,14 @@
 <style lang='stylus'>
   @import '~common/stylus/variable'
   
-  .singer-detail
-    position: fixed
-    z-index: 100
-    top: 0
-    left: 0
-    right: 0
-    bottom: 0
-    background: $color-background
+  // .singer-detail
+  //   position: fixed
+  //   z-index: 100
+  //   top: 0
+  //   left: 0
+  //   right: 0
+  //   bottom: 0
+  //   background: $color-background
   .slide-enter-active,.slide-leave-active
     transition: all .3s
   .slide-enter,.slide-leave-to
